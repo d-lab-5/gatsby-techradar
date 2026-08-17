@@ -10,9 +10,16 @@
     "csv-parse": "^5.5.0"
   },
   "peerDependencies": {
-    "gatsby": "^5.0.0"
+    "gatsby": "^5.0.0",
+    "aws-amplify": "^6.0.0"
+  },
+  "peerDependenciesMeta": {
+    "aws-amplify": {
+      "optional": true
+    }
   },
   "devDependencies": {
+    "aws-amplify": "^6.0.0",
     "typescript": "^5.4.0"
   }
 }

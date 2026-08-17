@@ -1,0 +1,36 @@
+name,ring,quadrant,moved,active,description
+TypeScript,ADOPT,Languages & Frameworks,0,true,Strongly typed JavaScript superset
+React,ADOPT,Languages & Frameworks,0,true,Component-based UI library
+Gatsby,ADOPT,Languages & Frameworks,0,true,Static site generator built on React
+Node.js,ADOPT,Languages & Frameworks,0,true,JavaScript runtime for server-side
+Python,ADOPT,Languages & Frameworks,0,true,Versatile programming language
+GraphQL,TRIAL,Languages & Frameworks,1,true,Query language for APIs
+Rust,TRIAL,Languages & Frameworks,1,true,Systems programming language with memory safety
+Deno,ASSESS,Languages & Frameworks,1,true,Modern JavaScript/TypeScript runtime
+Svelte,ASSESS,Languages & Frameworks,0,true,Compile-time UI framework
+HTMX,ASSESS,Languages & Frameworks,1,true,HTML-first approach to modern UIs
+jQuery,HOLD,Languages & Frameworks,-1,true,Legacy DOM manipulation library
+AWS CDK,ADOPT,Infrastructure,0,true,Infrastructure as code using familiar languages
+AWS Amplify Gen 2,ADOPT,Infrastructure,1,true,Full-stack TypeScript-first cloud development
+Docker,ADOPT,Infrastructure,0,true,Container runtime and image format
+Terraform,ADOPT,Infrastructure,0,true,Multi-cloud infrastructure as code
+GitHub Actions,TRIAL,Infrastructure,1,true,CI/CD integrated with GitHub
+AWS Lambda,ADOPT,Infrastructure,0,true,Serverless compute
+Kubernetes,TRIAL,Infrastructure,0,true,Container orchestration platform
+Pulumi,ASSESS,Infrastructure,1,true,Infrastructure as code with real programming languages
+AWS App Runner,ASSESS,Infrastructure,0,true,Simplified container deployment
+CloudFormation,HOLD,Infrastructure,-1,true,AWS-specific IaC with verbose YAML/JSON
+DynamoDB,ADOPT,Datastores,0,true,Serverless NoSQL database
+PostgreSQL,ADOPT,Datastores,0,true,Advanced open-source relational database
+S3,ADOPT,Datastores,0,true,Object storage service
+ElasticSearch,TRIAL,Datastores,0,true,Full-text search and analytics engine
+Redis,TRIAL,Datastores,0,true,In-memory data structure store
+Neptune,ASSESS,Datastores,1,true,Managed graph database service
+TimescaleDB,ASSESS,Datastores,0,true,Time-series database on PostgreSQL
+MongoDB,HOLD,Datastores,-1,true,Document database - prefer DynamoDB for new projects
+AWS AppSync,ADOPT,Data Management,0,true,Managed GraphQL API service
+Apache Kafka,TRIAL,Data Management,0,true,Distributed event streaming platform
+AWS Step Functions,TRIAL,Data Management,1,true,Serverless workflow orchestration
+dbt,ASSESS,Data Management,1,true,Data transformation tool
+Apache Airflow,ASSESS,Data Management,0,true,Workflow orchestration for data pipelines
+AWS Glue,HOLD,Data Management,0,true,ETL service - complex setup for simple tasks
