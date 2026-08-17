@@ -1,0 +1,22 @@
+{
+  "name": "gatsby-techradar-site",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "develop": "gatsby develop",
+    "build": "gatsby build",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean"
+  },
+  "dependencies": {
+    "@gatsby-techradar/core": "^1.0.0",
+    "@gatsby-techradar/react": "^1.0.0",
+    "gatsby": "^5.13.0",
+    "gatsby-source-techradar": "^1.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}

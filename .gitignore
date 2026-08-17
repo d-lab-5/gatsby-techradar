@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.cache/
+public/
+amplify_outputs.json
+amplify_outputs.dart
+amplifyconfiguration.json
+amplifyconfiguration.dart
+.amplify/
+*.tsbuildinfo

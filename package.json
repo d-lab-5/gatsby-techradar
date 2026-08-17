@@ -1,0 +1,15 @@
+{
+  "name": "gatsby-techradar",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build:core": "npm run build -w @gatsby-techradar/core",
+    "build:react": "npm run build -w @gatsby-techradar/react",
+    "build:plugin": "npm run build -w gatsby-source-techradar",
+    "build": "npm run build:core && npm run build:react && npm run build:plugin",
+    "dev": "npm run develop -w gatsby-techradar-site",
+    "test": "npm run test -w @gatsby-techradar/core"
+  }
+}
