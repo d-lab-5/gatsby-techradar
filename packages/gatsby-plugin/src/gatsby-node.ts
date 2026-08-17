@@ -5,7 +5,7 @@ import {
   DEFAULT_RINGS,
   assignSequentialIds,
 } from '@gatsby-techradar/core';
-import { loadCsvEntries } from './src/source-csv';
+import { loadCsvEntries } from './source-csv';
 
 export const pluginOptionsSchema: GatsbyNode['pluginOptionsSchema'] = ({ Joi }) => {
   return Joi.object({
@@ -86,7 +86,7 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
   let entries: TechradarEntry[];
 
   if (pluginOptions.source === 'amplify') {
-    const { loadAmplifyEntries } = await import('./src/source-amplify');
+    const { loadAmplifyEntries } = await import('./source-amplify');
     entries = await loadAmplifyEntries(pluginOptions.radarId ?? 'latest');
   } else {
     entries = loadCsvEntries(pluginOptions.csvPath!, quadrants, rings);
