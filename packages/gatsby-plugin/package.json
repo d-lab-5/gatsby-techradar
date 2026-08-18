@@ -1,6 +1,7 @@
 {
   "name": "gatsby-source-techradar",
   "version": "1.0.0",
+  "license": "MIT",
   "main": "dist/gatsby-node.js",
   "scripts": {
     "build": "tsc"
