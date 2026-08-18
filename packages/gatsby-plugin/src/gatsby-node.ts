@@ -4,6 +4,7 @@ import {
   DEFAULT_QUADRANTS,
   DEFAULT_RINGS,
   assignSequentialIds,
+  ringsToFlat,
 } from '@gatsby-techradar/core';
 import { loadCsvEntries } from './source-csv';
 
@@ -29,7 +30,17 @@ export const pluginOptionsSchema: GatsbyNode['pluginOptionsSchema'] = ({ Joi }) 
       Joi.object({
         index: Joi.number().required(),
         name: Joi.string().required(),
-        color: Joi.string().required(),
+        // A bare string applies to both themes; the object form gives each
+        // theme mode its own color.
+        color: Joi.alternatives()
+          .try(
+            Joi.string(),
+            Joi.object({
+              light: Joi.string().required(),
+              dark: Joi.string().required(),
+            })
+          )
+          .required(),
       })
     ),
   });
@@ -66,7 +77,10 @@ export const createSchemaCustomization: GatsbyNode['createSchemaCustomization'] 
     type TechradarRing {
       index: Int!
       name: String!
+      "Light-mode ring color."
       color: String!
+      "Dark-mode ring color. Equals color when the ring declares a single color."
+      colorDark: String!
     }
   `);
 };
@@ -108,16 +122,20 @@ export const sourceNodes: GatsbyNode['sourceNodes'] = async (
     });
   }
 
-  // Create config node
+  // Create config node. Ring colors are flattened to color/colorDark because
+  // GraphQL cannot express the string-or-object ThemeColor union; consumers
+  // rebuild them with ringsFromFlat().
+  const flatRings = ringsToFlat(rings);
+
   createNode({
     title: pluginOptions.radarName ?? 'Technology Radar',
     date: new Date().toISOString().split('T')[0],
     quadrants,
-    rings,
+    rings: flatRings,
     id: createNodeId('techradar-config'),
     internal: {
       type: 'TechradarConfig',
-      contentDigest: createContentDigest({ quadrants, rings }),
+      contentDigest: createContentDigest({ quadrants, rings: flatRings }),
     },
   });
 };

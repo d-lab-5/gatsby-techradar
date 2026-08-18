@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import type { RingConfig, PositionedEntry } from '@gatsby-techradar/core';
+import type { ResolvedRingConfig, PositionedEntry } from '@gatsby-techradar/core';
+import { useRadarTheme } from '../theme-context';
 
 interface QuadrantTableProps {
   quadrantName: string;
   quadrantIndex: number;
-  rings: RingConfig[];
+  rings: ResolvedRingConfig[];
   entries: PositionedEntry[];
   visible: boolean;
   highlightedEntry: number;
@@ -22,6 +23,7 @@ const QuadrantTable: React.FC<QuadrantTableProps> = ({
   onEntryMouseOver,
   onEntryMouseOut,
 }) => {
+  const theme = useRadarTheme();
   const [expandedItem, setExpandedItem] = useState<number>(0);
 
   if (!visible) return null;
@@ -30,7 +32,7 @@ const QuadrantTable: React.FC<QuadrantTableProps> = ({
 
   return (
     <div className="quadrant-table" style={{ marginTop: '1rem' }}>
-      <h2 style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontSize: '18px' }}>
+      <h2 style={{ fontFamily: theme.fontFamily, fontSize: '18px', color: theme.text }}>
         {quadrantName}
       </h2>
       {rings.map((ring) => {
@@ -45,7 +47,7 @@ const QuadrantTable: React.FC<QuadrantTableProps> = ({
             <h3
               style={{
                 color: ring.color,
-                fontFamily: 'Arial, Helvetica, sans-serif',
+                fontFamily: theme.fontFamily,
                 fontSize: '14px',
               }}
             >
@@ -65,10 +67,13 @@ const QuadrantTable: React.FC<QuadrantTableProps> = ({
                       onMouseOut={onEntryMouseOut}
                       style={{
                         cursor: 'pointer',
-                        fontFamily: 'Arial, Helvetica, sans-serif',
+                        fontFamily: theme.fontFamily,
                         fontSize: '13px',
                         fontWeight: isHighlighted ? 'bold' : 'normal',
-                        backgroundColor: isHighlighted ? '#eee' : 'transparent',
+                        color: theme.text,
+                        backgroundColor: isHighlighted
+                          ? theme.rowHighlight
+                          : 'transparent',
                         padding: '2px 4px',
                         borderRadius: '2px',
                       }}
@@ -79,9 +84,9 @@ const QuadrantTable: React.FC<QuadrantTableProps> = ({
                       <div
                         style={{
                           padding: '4px 8px 8px 20px',
-                          fontFamily: 'Arial, Helvetica, sans-serif',
+                          fontFamily: theme.fontFamily,
                           fontSize: '12px',
-                          color: '#666',
+                          color: theme.textMuted,
                         }}
                         dangerouslySetInnerHTML={{ __html: entry.description }}
                       />

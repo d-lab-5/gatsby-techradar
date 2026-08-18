@@ -1,9 +1,10 @@
 import React from 'react';
-import type { QuadrantConfig, RingConfig, PositionedEntry } from '@gatsby-techradar/core';
+import type { QuadrantConfig, ResolvedRingConfig, PositionedEntry } from '@gatsby-techradar/core';
+import { useRadarTheme } from '../theme-context';
 
 interface LegendProps {
   quadrant: QuadrantConfig;
-  rings: RingConfig[];
+  rings: ResolvedRingConfig[];
   entries: PositionedEntry[];
   offset: { x: number; y: number };
   highlightedEntry: number;
@@ -20,6 +21,8 @@ const Legend: React.FC<LegendProps> = ({
   onEntryMouseOver,
   onEntryMouseOut,
 }) => {
+  const theme = useRadarTheme();
+
   // Group entries by ring
   const byRing = rings.map((ring) =>
     entries
@@ -34,7 +37,8 @@ const Legend: React.FC<LegendProps> = ({
       {/* Quadrant title */}
       <text
         y={-45}
-        fontFamily="Arial, Helvetica, sans-serif"
+        fill={theme.text}
+        fontFamily={theme.fontFamily}
         fontSize="18px"
         fontWeight="bold"
       >
@@ -56,7 +60,7 @@ const Legend: React.FC<LegendProps> = ({
             <text
               x={dx}
               y={ringY - 16}
-              fontFamily="Arial, Helvetica, sans-serif"
+              fontFamily={theme.fontFamily}
               fontSize="12px"
               fontWeight="bold"
               fill={ring.color}
@@ -71,9 +75,9 @@ const Legend: React.FC<LegendProps> = ({
                   key={`legend-entry-${entry.id}`}
                   x={dx}
                   y={entryY}
-                  fontFamily="Arial, Helvetica, sans-serif"
+                  fontFamily={theme.fontFamily}
                   fontSize="11px"
-                  fill={isHighlighted ? '#fff' : undefined}
+                  fill={isHighlighted ? theme.highlightText : theme.text}
                   filter={isHighlighted ? 'url(#solid)' : undefined}
                   style={{ cursor: 'pointer' }}
                   onMouseOver={() => onEntryMouseOver(parseInt(entry.id, 10))}

@@ -7,9 +7,14 @@ import type {
 import {
   computePositions,
   assignSequentialIds,
+  resolveRings,
   DEFAULT_LAYOUT,
-  COLORS,
 } from '@gatsby-techradar/core';
+import {
+  RadarThemeProvider,
+  useRadarTheme,
+  type ThemeInput,
+} from './theme-context';
 import { useForceSimulation } from './hooks/useForceSimulation';
 import { useRadarInteraction } from './hooks/useRadarInteraction';
 import Arc from './components/Arc';
@@ -25,6 +30,13 @@ interface RadarChartProps {
   size?: number;
   showLegend?: boolean;
   showTable?: boolean;
+  /**
+   * 'light' | 'dark', a partial token set, or a complete RadarTheme.
+   * The chart is controlled: it never reads prefers-color-scheme itself, so
+   * that server-rendered markup matches the first client render. Detect the
+   * user's preference in the host app and pass the result down.
+   */
+  theme?: ThemeInput;
 }
 
 // Quadrant start angles for arc rendering (in radians)
@@ -35,12 +47,21 @@ const QUADRANT_START_ANGLES = [
   -Math.PI / 2,    // Q3: bottom-right
 ];
 
-const RadarChart: React.FC<RadarChartProps> = ({
+const RadarChartInner: React.FC<Omit<RadarChartProps, 'theme'>> = ({
   config,
   size,
   showLegend = true,
   showTable = true,
 }) => {
+  const theme = useRadarTheme();
+
+  // Ring colors are theme-dependent; resolve them once here so every child
+  // works with plain color strings.
+  const rings = useMemo(
+    () => resolveRings(config.rings, theme.mode),
+    [config.rings, theme.mode]
+  );
+
   const layout: RadarLayout = useMemo(
     () =>
       size
@@ -52,8 +73,8 @@ const RadarChart: React.FC<RadarChartProps> = ({
   // Compute positions for all entries
   const positionedEntries = useMemo(() => {
     const withIds = assignSequentialIds([...config.entries]);
-    return computePositions(withIds, config.rings, layout);
-  }, [config.entries, config.rings, layout]);
+    return computePositions(withIds, config.rings, layout, theme);
+  }, [config.entries, config.rings, layout, theme]);
 
   // Apply force simulation for collision avoidance
   const simulatedEntries = useForceSimulation(positionedEntries, layout);
@@ -101,7 +122,7 @@ const RadarChart: React.FC<RadarChartProps> = ({
           <QuadrantButton
             key={q.index}
             quadrant={q}
-            rings={config.rings}
+            rings={rings}
             isSelected={selectedQuadrant === q.index}
             onClick={() =>
               selectQuadrant(selectedQuadrant === q.index ? null : q.index)
@@ -115,11 +136,12 @@ const RadarChart: React.FC<RadarChartProps> = ({
             onClick={() => selectQuadrant(null)}
             style={{
               padding: '8px 16px',
-              fontFamily: 'Arial, Helvetica, sans-serif',
+              fontFamily: theme.fontFamily,
               fontSize: '14px',
-              border: '2px solid #999',
+              border: `2px solid ${theme.mutedBorder}`,
               borderRadius: '4px',
               backgroundColor: 'transparent',
+              color: theme.text,
               cursor: 'pointer',
             }}
           >
@@ -133,29 +155,29 @@ const RadarChart: React.FC<RadarChartProps> = ({
         id="radar"
         width={svgWidth}
         height={svgHeight}
-        style={{ backgroundColor: COLORS.background }}
+        style={{ backgroundColor: theme.background }}
       >
         <g transform={`translate(${svgWidth / 2}, ${svgHeight / 2})`}>
           {/* Filter for legend highlight */}
           <defs>
             <filter id="solid" x="0" y="0" width="1" height="1">
-              <feFlood floodColor="rgba(0, 0, 0, 0.8)" />
+              <feFlood floodColor={theme.highlightFill} />
               <feComposite in="SourceGraphic" />
             </filter>
           </defs>
 
           {/* Grid lines and ring labels */}
-          <GridLines layout={layout} rings={config.rings} />
+          <GridLines layout={layout} rings={rings} />
 
           {/* Ring arcs per quadrant */}
           {config.quadrants.map((q) =>
-            config.rings.map((ring) => (
+            rings.map((ring) => (
               <Arc
                 key={`arc-${q.index}-${ring.index}`}
                 minRadius={ring.index === 0 ? 0 : layout.ringRadii[ring.index - 1]}
                 maxRadius={layout.ringRadii[ring.index]}
                 startAngle={QUADRANT_START_ANGLES[q.index]}
-                ringIndex={ring.index}
+                color={ring.color}
                 center={0}
               />
             ))
@@ -204,7 +226,8 @@ const RadarChart: React.FC<RadarChartProps> = ({
           {/* Title */}
           <text
             transform="translate(-675, -420)"
-            fontFamily="Arial, Helvetica, sans-serif"
+            fill={theme.text}
+            fontFamily={theme.fontFamily}
             fontSize="30"
             fontWeight="bold"
           >
@@ -215,9 +238,9 @@ const RadarChart: React.FC<RadarChartProps> = ({
           {config.date && (
             <text
               transform="translate(-675, -400)"
-              fontFamily="Arial, Helvetica, sans-serif"
+              fontFamily={theme.fontFamily}
               fontSize="14"
-              fill="#999"
+              fill={theme.mutedBorder}
             >
               {config.date}
             </text>
@@ -226,7 +249,8 @@ const RadarChart: React.FC<RadarChartProps> = ({
           {/* Footer */}
           <text
             transform="translate(-675, 420)"
-            fontFamily="Arial, Helvetica, sans-serif"
+            fill={theme.text}
+            fontFamily={theme.fontFamily}
             fontSize="10"
           >
             ▲ moved up     ▼ moved down
@@ -238,7 +262,7 @@ const RadarChart: React.FC<RadarChartProps> = ({
               <Legend
                 key={`legend-${q.index}`}
                 quadrant={q}
-                rings={config.rings}
+                rings={rings}
                 entries={simulatedEntries}
                 offset={legendOffsets[i]}
                 highlightedEntry={highlightedEntry}
@@ -256,7 +280,7 @@ const RadarChart: React.FC<RadarChartProps> = ({
             key={`table-${q.index}`}
             quadrantName={q.name}
             quadrantIndex={q.index}
-            rings={config.rings}
+            rings={rings}
             entries={simulatedEntries}
             visible={selectedQuadrant === q.index}
             highlightedEntry={highlightedEntry}
@@ -267,5 +291,11 @@ const RadarChart: React.FC<RadarChartProps> = ({
     </div>
   );
 };
+
+const RadarChart: React.FC<RadarChartProps> = ({ theme, ...props }) => (
+  <RadarThemeProvider theme={theme}>
+    <RadarChartInner {...props} />
+  </RadarThemeProvider>
+);
 
 export default RadarChart;

@@ -8,3 +8,5 @@ amplifyconfiguration.json
 amplifyconfiguration.dart
 .amplify/
 *.tsbuildinfo
+.idea/
+.vscode/

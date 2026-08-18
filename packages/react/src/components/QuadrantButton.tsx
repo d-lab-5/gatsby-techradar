@@ -1,9 +1,10 @@
 import React from 'react';
-import type { QuadrantConfig, RingConfig } from '@gatsby-techradar/core';
+import type { QuadrantConfig, ResolvedRingConfig } from '@gatsby-techradar/core';
+import { useRadarTheme } from '../theme-context';
 
 interface QuadrantButtonProps {
   quadrant: QuadrantConfig;
-  rings: RingConfig[];
+  rings: ResolvedRingConfig[];
   isSelected: boolean;
   onClick: () => void;
   onMouseOver: () => void;
@@ -18,6 +19,8 @@ const QuadrantButton: React.FC<QuadrantButtonProps> = ({
   onMouseOver,
   onMouseOut,
 }) => {
+  const theme = useRadarTheme();
+
   return (
     <button
       onClick={onClick}
@@ -25,13 +28,13 @@ const QuadrantButton: React.FC<QuadrantButtonProps> = ({
       onMouseOut={onMouseOut}
       style={{
         padding: '8px 16px',
-        fontFamily: 'Arial, Helvetica, sans-serif',
+        fontFamily: theme.fontFamily,
         fontSize: '14px',
         fontWeight: isSelected ? 'bold' : 'normal',
         border: `2px solid ${rings[0].color}`,
         borderRadius: '4px',
         backgroundColor: isSelected ? rings[0].color : 'transparent',
-        color: isSelected ? '#fff' : '#333',
+        color: isSelected ? theme.onAccent : theme.text,
         cursor: 'pointer',
         marginRight: '8px',
         marginBottom: '8px',

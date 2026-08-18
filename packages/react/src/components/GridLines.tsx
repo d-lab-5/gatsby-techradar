@@ -1,14 +1,15 @@
 import React from 'react';
-import type { RadarLayout, RingConfig } from '@gatsby-techradar/core';
-import { COLORS } from '@gatsby-techradar/core';
+import type { RadarLayout, ResolvedRingConfig } from '@gatsby-techradar/core';
+import { useRadarTheme } from '../theme-context';
 
 interface GridLinesProps {
   layout: RadarLayout;
-  rings: RingConfig[];
+  rings: ResolvedRingConfig[];
   showLabels?: boolean;
 }
 
 const GridLines: React.FC<GridLinesProps> = ({ layout, rings, showLabels = true }) => {
+  const theme = useRadarTheme();
   const maxR = layout.ringRadii[3];
 
   return (
@@ -17,12 +18,12 @@ const GridLines: React.FC<GridLinesProps> = ({ layout, rings, showLabels = true 
       <line
         x1={0} y1={-maxR}
         x2={0} y2={maxR}
-        stroke={COLORS.grid} strokeWidth={1}
+        stroke={theme.grid} strokeWidth={1}
       />
       <line
         x1={-maxR} y1={0}
         x2={maxR} y2={0}
-        stroke={COLORS.grid} strokeWidth={1}
+        stroke={theme.grid} strokeWidth={1}
       />
 
       {/* Ring circles */}
@@ -31,7 +32,7 @@ const GridLines: React.FC<GridLinesProps> = ({ layout, rings, showLabels = true 
           <circle
             cx={0} cy={0} r={radius}
             fill="none"
-            stroke={COLORS.grid} strokeWidth={1}
+            stroke={theme.grid} strokeWidth={1}
           />
           {showLabels && (
             <text
@@ -39,7 +40,7 @@ const GridLines: React.FC<GridLinesProps> = ({ layout, rings, showLabels = true 
               textAnchor="middle"
               fill={rings[i].color}
               opacity={0.35}
-              fontFamily="Arial, Helvetica, sans-serif"
+              fontFamily={theme.fontFamily}
               fontSize="42px"
               fontWeight="bold"
               pointerEvents="none"

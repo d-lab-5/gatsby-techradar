@@ -16,10 +16,15 @@ export const QuadrantConfigSchema = z.object({
   name: z.string().min(1),
 });
 
+export const ThemeColorSchema = z.union([
+  z.string(),
+  z.object({ light: z.string(), dark: z.string() }),
+]);
+
 export const RingConfigSchema = z.object({
   index: z.number().int().min(0).max(3),
   name: z.string().min(1),
-  color: z.string(),
+  color: ThemeColorSchema,
 });
 
 export const TechradarConfigSchema = z.object({

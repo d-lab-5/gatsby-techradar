@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRadarTheme } from '../theme-context';
 
 interface TooltipProps {
   label: string;
@@ -8,6 +9,8 @@ interface TooltipProps {
 }
 
 const Tooltip: React.FC<TooltipProps> = ({ label, x, y, visible }) => {
+  const theme = useRadarTheme();
+
   if (!visible) return null;
 
   // Estimate text width (rough: 6px per char)
@@ -26,21 +29,21 @@ const Tooltip: React.FC<TooltipProps> = ({ label, x, y, visible }) => {
         height={18}
         rx={4}
         ry={4}
-        fill="#333"
+        fill={theme.tooltipBackground}
       />
       <text
         x={textWidth / 2}
         y={-1}
         textAnchor="middle"
-        fontFamily="sans-serif"
+        fontFamily={theme.fontFamily}
         fontSize="10px"
-        fill="#fff"
+        fill={theme.tooltipText}
       >
         {label}
       </text>
       <path
         d={`M ${textWidth / 2 - 5},4 ${textWidth / 2 + 5},4 ${textWidth / 2},12 z`}
-        fill="#333"
+        fill={theme.tooltipBackground}
       />
     </g>
   );

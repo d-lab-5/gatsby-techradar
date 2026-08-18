@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRadarTheme } from '../theme-context';
 
 interface BlipProps {
   x: number;
@@ -25,6 +26,7 @@ const Blip: React.FC<BlipProps> = ({
   onMouseOver,
   onMouseOut,
 }) => {
+  const theme = useRadarTheme();
   const opacity = highlighted ? 1 : 0.7;
 
   return (
@@ -46,8 +48,8 @@ const Blip: React.FC<BlipProps> = ({
         <text
           y={3}
           textAnchor="middle"
-          fill="#fff"
-          fontFamily="Arial, Helvetica, sans-serif"
+          fill={theme.onAccent}
+          fontFamily={theme.fontFamily}
           fontSize={id.length > 2 ? '8px' : '9px'}
           pointerEvents="none"
           style={{ userSelect: 'none' }}

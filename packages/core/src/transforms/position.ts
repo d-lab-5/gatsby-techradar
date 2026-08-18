@@ -1,6 +1,13 @@
-import type { TechradarEntry, PositionedEntry, RadarLayout, RingConfig } from '../types';
+import type {
+  TechradarEntry,
+  PositionedEntry,
+  RadarLayout,
+  RadarTheme,
+  RingConfig,
+} from '../types';
 import { createSegment, type Segment } from './segment';
-import { DEFAULT_LAYOUT, COLORS } from '../constants';
+import { DEFAULT_LAYOUT, LIGHT_THEME } from '../constants';
+import { resolveThemeColor } from '../theme';
 
 function createSeededRandom(initialSeed = 42) {
   let seed = initialSeed;
@@ -13,14 +20,17 @@ function createSeededRandom(initialSeed = 42) {
 export function computePositions(
   entries: TechradarEntry[],
   rings: RingConfig[],
-  layout: RadarLayout = DEFAULT_LAYOUT
+  layout: RadarLayout = DEFAULT_LAYOUT,
+  theme: RadarTheme = LIGHT_THEME
 ): PositionedEntry[] {
   const random = createSeededRandom(42);
 
   const positioned: PositionedEntry[] = entries.map((entry) => {
     const seg = createSegment(entry.quadrant, entry.ring, layout, random);
     const point = seg.random();
-    const color = entry.active ? rings[entry.ring].color : COLORS.inactive;
+    const color = entry.active
+      ? resolveThemeColor(rings[entry.ring].color, theme.mode)
+      : theme.inactive;
 
     return {
       ...entry,
